@@ -52,12 +52,7 @@ for i in range(1, M):
 HashTableMovies = [['', ''] for _ in range(M)]  # INICIALIZANDO A TABELA
 
 HashTableMovies = movies_dados(HashTableMovies)
-#
-#
-# # for i in range(1, M):
-# #     if (HashTableMovies[i][0] != ''):
-# #         print(i, HashTableMovies[i], HashTableMediaCount[i])
-#
+
 for i in range(1, M):
     if (HashTableMovies[i][0] != ''):
-        print(f"{i} | {'| '.join(map(str, HashTableMovies[i]))} {'| '.join(map(str, HashTableMediaCount[i]))}")
+        print(f"{i} , {' , '.join(map(str, HashTableMovies[i]))} , {' , '.join(map(str, HashTableMediaCount[i]))}")
