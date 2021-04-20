@@ -10,9 +10,7 @@ class TrieNode(object):
         self.char = char
         self.children = []
         self.movieid = 0
-        # Is it the last character of the word.`
         self.word_finished = False
-        # How many times this character appeared in the addition process
         self.counter = 1
 
 
@@ -69,7 +67,10 @@ def find_prefix(root, prefix: str) -> Tuple[bool, int]:
 
 if __name__ == "__main__":
     root = TrieNode('*')
+
     add(root, "Star Wars: Episode IV", 260)
     add(root, 'Star Wars: Episode V', 1196)
+    add(root, 'LOUCURADA', 2220)
+
 
     print(find_prefix(root, 'Star War'))
