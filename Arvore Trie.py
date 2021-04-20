@@ -61,10 +61,6 @@ def find_prefix(root, prefix: str) -> Tuple[bool, int]:
                 node = child
                 break
 
-        if not char_not_found:
-            for child in node.children:
-
-
         if char_not_found:
             return False, 0
 
