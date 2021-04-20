@@ -39,13 +39,11 @@ def add(root, word: str, movieid: int):
     node.word_finished = True
 
 
-def find_prefix(root, prefix: str) -> Tuple[bool, int]:
+def find_prefix(root, prefix: str):
 
     node = root
 
-
     if not root.children:
-
         return False, 0
 
     for char in prefix:
@@ -62,15 +60,39 @@ def find_prefix(root, prefix: str) -> Tuple[bool, int]:
         if char_not_found:
             return False, 0
 
-    return True, node.counter
+
+    return True, node
+
+
+def acha_o_resto (node, achados):
+    for child in node.children:
+        print(child.char)
+        if child.counter != 0:
+            achados.append(acha_o_resto(child,achados))
+            aux = acha_o_resto(child, achados)
+            if aux != None:
+                achados.append(aux)
+            else:
+                break
+        else:
+            print(child.movieid)
+            return child.movieid
 
 
 if __name__ == "__main__":
     root = TrieNode('*')
-
-    add(root, "Star Wars: Episode IV", 260)
+    tupla = ()
+    achados= []
     add(root, 'Star Wars: Episode V', 1196)
-    add(root, 'LOUCURADA', 2220)
+    add(root, "Star Wars: Episode IV", 260)
+
+    add(root, 'loucurada anual', 2222)
+    add(root, 'loucurada', 2220)
 
 
-    print(find_prefix(root, 'Star War'))
+
+    tupla =(find_prefix(root, 'Star War'))
+    if tupla[0] == True:
+        acha_o_resto(tupla[1])
+
+    print(achados)
