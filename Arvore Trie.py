@@ -1,123 +1,76 @@
-class Node:
-    def __init__(self, key=None, data=None):
-        self.key = key
-        self.data = data
-        self.children = dict()
-
-    def addChild(self, key, data=None):
-        if not isinstance(key, Node):
-            self.children[key] = Node(key, data)
-        else:
-            self.children[key.label] = key
+from typing import Tuple
 
 
-class Trie:
-    def __init__(self):
-        self.head = Node()
+class TrieNode(object):
+    """
+    Our trie node implementation. Very basic. but does the job
+    """
 
-    def add_word(self, word):
-        current_node = self.head
-        word_finished = True
+    def __init__(self, char: str, movieid=0):
+        self.char = char
+        self.children = []
+        self.movieid = 0
+        self.word_finished = False
+        self.counter = 1
 
-        for i in range(len(word)):
-            if word[i] in current_node.children:
-                current_node = current_node.children[word[i]]
-            else:
-                word_finished = False
+
+def add(root, word: str, movieid: int):
+
+    node = root
+    for char in word:
+        print("char in word :", char)
+        found_in_child = False
+
+        for child in node.children:
+            if child.char == char:
+                child.counter += 1
+                node = child
+
+                found_in_child = True
                 break
 
-        if not word_finished:
-            while i < len(word):
-                current_node.addChild(word[i])
-                current_node = current_node.children[word[i]]
-                i += 1
+        if not found_in_child:
+            new_node = TrieNode(char)
+            node.children.append(new_node)
 
-        current_node.data = word
+            node = new_node
 
-    def add_words(self, words):
-        for word in words.split():
-            self.add_word(word)
+    node.movieid = movieid # Adiciona o campo movieID no ultimo caracter adicionado na arvore trie
+    node.word_finished = True
 
-    def has_word(self, word):
-        if word == '':
-            return False
-        if word == None:
-            raise ValueError('Trie.has_word precisa de uma string valida.')
 
-        current_node = self.head
-        exists = True
+def find_prefix(root, prefix: str) -> Tuple[bool, int]:
 
-        for letter in word:
-            if letter in current_node.children:
-                current_node = current_node.children[letter]
-            else:
-                exists = False
+    node = root
+
+
+    if not root.children:
+
+        return False, 0
+
+    for char in prefix:
+        char_not_found = True
+
+        for child in node.children:
+            if child.char == char:
+
+                char_not_found = False
+
+                node = child
                 break
 
-        if exists:
-            if current_node.data == None:
-                exists = False
+        if char_not_found:
+            return False, 0
 
-        return exists
-
-    def remove_word(self, word):
-        if word == '':
-            return False
-        if word == None:
-            raise ValueError('Trie.has_word precisa de uma string valida')
-
-        current_node = self.head
-        exists = True
-
-        for letter in word:
-            if letter in current_node.children:
-                current_node = current_node.children[letter]
-            else:
-                exists = False
-                break
-
-        if exists:
-            current_node.data = None
+    return True, node.counter
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    root = TrieNode('*')
 
-    trie = Trie()
-    words = 'sol sal sola cafe pao padeiro padaria'
+    add(root, "Star Wars: Episode IV", 260)
+    add(root, 'Star Wars: Episode V', 1196)
+    add(root, 'LOUCURADA', 2220)
 
-    trie.add_words(words)
 
-    ### Testes para busca
-    print("Teste para busca:\n")
-    if (trie.has_word('sol') == True):
-       print("A palavra foi encontrada.\n")
-    else:
-       print("A palavra nao foi encontrada.\n")
-
-    if (trie.has_word('cobre') == True):
-        print("A palavra foi encontrada.\n")
-    else:
-        print("A palavra nao foi encontrada.\n")
-
-    # Testes para inserção
-    print("Teste para insercao:\n")
-    if (trie.has_word('so') == True):
-        print("A palavra foi encontrada.\n")
-    else:
-        print("A palavra nao foi encontrada.\n")
-
-    trie.add_word('so')
-
-    if (trie.has_word('so') == True):
-        print("A palavra foi encontrada.\n")
-    else:
-        print("A palavra nao foi encontrada.\n")
-
-        # Testes para remoção
-    print("Teste para remocao:\n")
-    trie.remove_word('sol')
-
-    if (trie.has_word('sol') == True):
-        print("A palavra foi encontrada.\n")
-    else:
-        print("A palavra nao foi encontrada.\n")###
+    print(find_prefix(root, 'Star War'))
