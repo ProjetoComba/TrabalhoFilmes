@@ -1,5 +1,7 @@
 import csv
 
+#TESTE GIT HUB
+
 M = 131263
 HashTableMediaCount = [[0.0, 0] for _ in range(M)]  # INICIALIZANDO A TABELA
 
