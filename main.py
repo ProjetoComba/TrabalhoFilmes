@@ -55,4 +55,4 @@ HashTableMovies = movies_dados(HashTableMovies)
 
 for i in range(1, M):
     if (HashTableMovies[i][0] != ''):
-        print(f"{i} , {' , '.join(map(str, HashTableMovies[i]))} , {' , '.join(map(str, HashTableMediaCount[i]))}")
+        print(f"{i}, {' , '.join(map(str, HashTableMovies[i]))} , {' , '.join(map(str, HashTableMediaCount[i]))}")
