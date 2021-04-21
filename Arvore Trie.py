@@ -64,17 +64,21 @@ def find_prefix(root, prefix: str):
 
 
 def acha_o_resto (node, achados):
-
-    if
+    print(node.char)
+    if (node.movieid != 0):
+        achados.append(node.movieid)
+        if (node.folha == True):
+            return
 
     for child in node.children:
         print(child.char, child.word_finished, child.counter, child.folha)
         if (child.folha == True):
+            achados.append(child.movieid)
             break
 
         if (child.counter != 0 ):
             aux = acha_o_resto(child, achados)
-            if aux != None:
+            if aux != 0:
                 achados.append(aux)
 
     return child.movieid
@@ -89,9 +93,9 @@ if __name__ == "__main__":
     add(root, 'loucurada 2', 2220)
     add(root, 'loucura', 2222)
 
-    tupla = (find_prefix(root, 'loucura'))
+    tupla = (find_prefix(root, 'loucu'))
 
     if tupla[0] == True:
         acha_o_resto(tupla[1], achados)
 
-    print(achados)
+    print(sorted(set(achados)))
