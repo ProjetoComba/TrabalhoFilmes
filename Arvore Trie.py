@@ -1,10 +1,4 @@
-from typing import Tuple
-
-
 class TrieNode(object):
-    """
-    Our trie node implementation. Very basic. but does the job
-    """
 
     def __init__(self, char: str, movieid=0):
         self.char = char
@@ -12,19 +6,22 @@ class TrieNode(object):
         self.movieid = 0
         self.word_finished = False
         self.counter = 1
+        self.folha = False
 
 
 def add(root, word: str, movieid: int):
 
     node = root
     for char in word:
-        print("char in word :", char)
         found_in_child = False
 
         for child in node.children:
             if child.char == char:
                 child.counter += 1
                 node = child
+
+                if node.folha == True:
+                    node.folha = False
 
                 found_in_child = True
                 break
@@ -34,6 +31,9 @@ def add(root, word: str, movieid: int):
             node.children.append(new_node)
 
             node = new_node
+
+    if len(node.children) == 0:
+        node.folha = True
 
     node.movieid = movieid # Adiciona o campo movieID no ultimo caracter adicionado na arvore trie
     node.word_finished = True
@@ -60,33 +60,37 @@ def find_prefix(root, prefix: str):
         if char_not_found:
             return False, 0
 
-
     return True, node
 
 
 def acha_o_resto (node, achados):
 
+    if
+
     for child in node.children:
-        if (child.counter == 1) and (child.word_finished == True):
+        print(child.char, child.word_finished, child.counter, child.folha)
+        if (child.folha == True):
             break
+
         if (child.counter != 0 ):
             aux = acha_o_resto(child, achados)
             if aux != None:
                 achados.append(aux)
+
     return child.movieid
 
 
 if __name__ == "__main__":
     root = TrieNode('*')
-    tupla = ()
     achados= []
-    add(root, 'Star Wars: Episode V', 1196)
     add(root, "Star Wars: Episode IV", 260)
+    add(root, 'Star Wars: Episode V', 1196)
 
-    add(root, 'loucura', 2222)
     add(root, 'loucurada 2', 2220)
+    add(root, 'loucura', 2222)
 
-    tupla =(find_prefix(root, 'loucu'))
+    tupla = (find_prefix(root, 'loucura'))
+
     if tupla[0] == True:
         acha_o_resto(tupla[1], achados)
 
