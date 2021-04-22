@@ -1,15 +1,18 @@
 import csv
 
-def media_count_rating(HashTableMediaCount, M):
+def media_count_rating(HashTableMediaCount, M, HashTable_User):
     with open('rating.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
 
         csv_reader.__next__()
 
         for row in csv_reader:
+            userID = int(row[0])
             movieID = int(row[1])
             rating = float(row[2])
+            tupla = (movieID, rating)
 
+            HashTable_User[userID].append(tupla)
             HashTableMediaCount[movieID][0] += rating
             HashTableMediaCount[movieID][1] += 1
 
@@ -17,7 +20,7 @@ def media_count_rating(HashTableMediaCount, M):
             if (HashTableMediaCount[i][0] != 0):
                 HashTableMediaCount[i][0] = round(HashTableMediaCount[i][0] / HashTableMediaCount[i][1], 6)
 
-        return HashTableMediaCount
+        return HashTableMediaCount, HashTable_User
 
 
 
@@ -126,18 +129,22 @@ def acha_o_resto (node, achados):
 
 
 ################### MAIN ############################
-M = 131263
+M = 131263 #Tamanho tabela Hash
+N = 138494 #Numero de usuarios
 HashTableMediaCount = [[0.0, 0] for _ in range(M)]  # INICIALIZANDO A TABELA
+HashTable_User = [[] for _ in range(N)]
 
-HashTableMediaCount = media_count_rating(HashTableMediaCount, M)
-
-# for i in range(1, M):
-#     if (HashTableMediaCount[i][0] != 0):
-#         print(i, HashTableMediaCount[i])
+HashTableMediaCount, HashTable_User = media_count_rating(HashTableMediaCount, M, HashTable_User)
 
 HashTableMovies = [['', ''] for _ in range(M)]  # INICIALIZANDO A TABELA
 
 HashTableMovies = movies_dados(HashTableMovies)
+
+usuario = int(input("Digite o usuario: "))
+for movie in HashTable_User[usuario]:
+    #print(movie[0], type(movie[0]), movie[1], type(movie[1]))
+    print(f"{movie[1]}, {str(HashTableMovies[movie[0]][0])} , {' , '.join(map(str, HashTableMediaCount[movie[0]]))}")
+print("#"*50)
 
 if __name__ == "__main__":
     root = TrieNode('*')
