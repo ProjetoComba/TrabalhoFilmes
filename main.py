@@ -148,8 +148,13 @@ if __name__ == "__main__":
             add(root, HashTableMovies[i][0], i)
 
     while(True):
+        achados.clear()
+
         print("Digite o nome do filme que deseja buscar: ")
         nome = input()
+
+        if nome == '-1':
+            break
 
         tupla = (find_prefix(root, nome))
 
@@ -160,3 +165,4 @@ if __name__ == "__main__":
 
         for id in achados:
             print(f"{id}, {' , '.join(map(str, HashTableMovies[id]))} , {' , '.join(map(str, HashTableMediaCount[id]))}")
+
