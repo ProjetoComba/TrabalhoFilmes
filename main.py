@@ -139,10 +139,6 @@ HashTableMovies = [['', ''] for _ in range(M)]  # INICIALIZANDO A TABELA
 
 HashTableMovies = movies_dados(HashTableMovies)
 
-# for i in range(1, M):
-#     if (HashTableMovies[i][0] != ''):
-#         print(f"{i}, {' , '.join(map(str, HashTableMovies[i]))} , {' , '.join(map(str, HashTableMediaCount[i]))}")
-
 if __name__ == "__main__":
     root = TrieNode('*')
     achados= []
@@ -151,17 +147,16 @@ if __name__ == "__main__":
         if (HashTableMovies[i][0] != ''):
             add(root, HashTableMovies[i][0], i)
 
-    print("Digite o nome do filme que deseja buscar: ")
-    nome = input()
-    print(nome)
+    while(True):
+        print("Digite o nome do filme que deseja buscar: ")
+        nome = input()
 
-    tupla = (find_prefix(root, nome))
+        tupla = (find_prefix(root, nome))
 
-    if tupla[0] == True:
-        acha_o_resto(tupla[1], achados)
+        if tupla[0] == True:
+            acha_o_resto(tupla[1], achados)
 
-    achados = sorted(set(achados))
-    print(achados)
+        achados = sorted(set(achados))
 
-    for id in achados:
-        print(f"{id}, {' , '.join(map(str, HashTableMovies[id]))} , {' , '.join(map(str, HashTableMediaCount[id]))}")
+        for id in achados:
+            print(f"{id}, {' , '.join(map(str, HashTableMovies[id]))} , {' , '.join(map(str, HashTableMediaCount[id]))}")
