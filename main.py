@@ -140,12 +140,14 @@ HashTableMovies = [['', ''] for _ in range(M)]  # INICIALIZANDO A TABELA
 
 HashTableMovies = movies_dados(HashTableMovies)
 
+##### CHAMADA PESQUISA 2.1 #############
 usuario = int(input("Digite o usuario: "))
 for movie in HashTable_User[usuario]:
     #print(movie[0], type(movie[0]), movie[1], type(movie[1]))
     print(f"{movie[1]}, {str(HashTableMovies[movie[0]][0])} , {' , '.join(map(str, HashTableMediaCount[movie[0]]))}")
 print("#"*50)
 
+##### CHAMADA PESQUISA 2.2 #############
 if __name__ == "__main__":
     root = TrieNode('*')
     achados= []
@@ -173,3 +175,17 @@ if __name__ == "__main__":
         for id in achados:
             print(f"{id}, {' , '.join(map(str, HashTableMovies[id]))} , {' , '.join(map(str, HashTableMediaCount[id]))}")
 
+##### CHAMADA PESQUISA 2.3 #############
+Table_Generos = []        # TAMANHO TABELA GENEROS
+
+genero = str(input("Digite o gênero: ")).upper()
+
+for i in range(1, M):
+    if (HashTableMovies[i][1] != ''):
+        if ((genero in (HashTableMovies[i][1]).upper()) and (HashTableMediaCount[i][1] >= 1000)):
+            tuplaAux = (i, HashTableMediaCount[i][0])
+
+            Table_Generos.append(tuplaAux)
+
+
+print(Table_Generos)
