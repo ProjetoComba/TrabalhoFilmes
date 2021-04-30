@@ -1,132 +1,8 @@
-import csv
-
-def media_count_rating(HashTableMediaCount, M, HashTable_User):
-    with open('rating.csv') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-
-        csv_reader.__next__()
-
-        for row in csv_reader:
-            userID = int(row[0])
-            movieID = int(row[1])
-            rating = float(row[2])
-            tupla = (movieID, rating)
-
-            HashTable_User[userID].append(tupla)
-            HashTableMediaCount[movieID][0] += rating
-            HashTableMediaCount[movieID][1] += 1
-
-        for i in range(M):
-            if (HashTableMediaCount[i][0] != 0):
-                HashTableMediaCount[i][0] = round(HashTableMediaCount[i][0] / HashTableMediaCount[i][1], 6)
-
-        return HashTableMediaCount, HashTable_User
-
-
-
-def movies_dados(HashTableMovies):
-##### salvando os dados dos filmes em uma tabela hash ######
-    with open('movie_clean.csv') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-
-        csv_reader.__next__()
-
-        for row in csv_reader:
-            movieID = int(row[0])
-            nome = str(row[1])
-            genero = str(row[2])
-
-            HashTableMovies[movieID][0] = nome
-            HashTableMovies[movieID][1] = genero
-
-        return HashTableMovies
-
-########### BUSCA DE NOME ########################
-class TrieNode(object):
-
-    def __init__(self, char: str, movieid=0):
-        self.char = char
-        self.children = []
-        self.movieid = 0
-        self.word_finished = False
-        self.counter = 1
-        self.folha = False
-
-
-def add(root, word: str, movieid: int):
-
-    node = root
-    for char in word:
-        found_in_child = False
-
-        for child in node.children:
-            if child.char == char:
-                child.counter += 1
-                node = child
-
-                if node.folha == True:
-                    node.folha = False
-
-                found_in_child = True
-                break
-
-        if not found_in_child:
-            new_node = TrieNode(char)
-            node.children.append(new_node)
-
-            node = new_node
-
-    if len(node.children) == 0:
-        node.folha = True
-
-    node.movieid = movieid # Adiciona o campo movieID no ultimo caracter adicionado na arvore trie
-    node.word_finished = True
-
-
-def find_prefix(root, prefix: str):
-
-    node = root
-
-    if not root.children:
-        return False, 0
-
-    for char in prefix:
-        char_not_found = True
-
-        for child in node.children:
-            if child.char == char:
-
-                char_not_found = False
-
-                node = child
-                break
-
-        if char_not_found:
-            return False, 0
-
-    return True, node
-
-
-def acha_o_resto (node, achados):
-
-    if (node.movieid != 0):
-        achados.append(node.movieid)
-        if (node.folha == True):
-            return
-
-    for child in node.children:
-
-        if (child.folha == True):
-            achados.append(child.movieid)
-            break
-
-        if (child.counter != 0 ):
-            aux = acha_o_resto(child, achados)
-            if aux != 0:
-                achados.append(aux)
-
-    return child.movieid
-
+from Ordenamento import quick_sort
+from Leitura_Rating import media_count_rating
+from Leitura_Movies import movies_dados
+import Busca_Nome
+import re
 
 ################### MAIN ############################
 M = 131263 #Tamanho tabela Hash
@@ -143,18 +19,17 @@ HashTableMovies = movies_dados(HashTableMovies)
 ##### CHAMADA PESQUISA 2.1 #############
 usuario = int(input("Digite o usuario: "))
 for movie in HashTable_User[usuario]:
-    #print(movie[0], type(movie[0]), movie[1], type(movie[1]))
     print(f"{movie[1]}, {str(HashTableMovies[movie[0]][0])} , {' , '.join(map(str, HashTableMediaCount[movie[0]]))}")
 print("#"*50)
 
 ##### CHAMADA PESQUISA 2.2 #############
 if __name__ == "__main__":
-    root = TrieNode('*')
-    achados= []
+    root = Busca_Nome.TrieNode('*')
+    achados = []
 
     for i in range(1, M):
         if (HashTableMovies[i][0] != ''):
-            add(root, HashTableMovies[i][0], i)
+            Busca_Nome.add(root, HashTableMovies[i][0], i)
 
     while(True):
         achados.clear()
@@ -165,10 +40,10 @@ if __name__ == "__main__":
         if nome == '-1':
             break
 
-        tupla = (find_prefix(root, nome))
+        tupla = (Busca_Nome.find_prefix(root, nome))
 
         if tupla[0] == True:
-            acha_o_resto(tupla[1], achados)
+            Busca_Nome.acha_o_resto(tupla[1], achados)
 
         achados = sorted(set(achados))
 
@@ -178,14 +53,22 @@ if __name__ == "__main__":
 ##### CHAMADA PESQUISA 2.3 #############
 Table_Generos = []        # TAMANHO TABELA GENEROS
 
-genero = str(input("Digite o gênero: ")).upper()
+entradaGeneros = str(input("Digite o topX e o gênero: ")).upper().split()
+
+topN = int(re.sub('[^0-9]','', entradaGeneros[0]))
+
+genero = entradaGeneros[1].replace("'", "")
 
 for i in range(1, M):
     if (HashTableMovies[i][1] != ''):
         if ((genero in (HashTableMovies[i][1]).upper()) and (HashTableMediaCount[i][1] >= 1000)):
-            tuplaAux = (i, HashTableMediaCount[i][0])
+            tuplaAux = (HashTableMediaCount[i][0], i)
 
             Table_Generos.append(tuplaAux)
 
+quick_sort(Table_Generos, len(Table_Generos))
+Table_Generos.reverse()
 
-print(Table_Generos)
+for i in range (0, topN):
+    movieId = Table_Generos[i][1]
+    print(f"{' , '.join(map(str, HashTableMovies[movieId]))} , {' , '.join(map(str, HashTableMediaCount[movieId]))}")
